@@ -30,14 +30,25 @@ for i=1:num
         end
     end
 end
-
+conv1 = convhull(pu1(1:5), pu2(1:5));
+conv2 = convhull(pu1(4:8), pu2(4:8)) + 3*ones(6, 1);
+conv3 = convhull(pu1(7:11), pu2(7:11)) + 6*ones(6, 1);
+conv4 = convhull(pu1(10:14), pu2(10:14)) + 9*ones(6, 1);
 figure('Name', 'State');
 plot3(x1, x2, x3);
 set(gca,'XTick',[10:2:26]);
 set(gca,'YTick',[-2:1:8]);
 grid on;
 figure('Name', 'control input');
-plot(u1, u2, dB_x*px1, dB_x*px2, 'r*');
+plot(u1, u2, dB_x*px1, dB_x*px2, 'r.', pu1, pu2, 'm*');
+hold on;
+plot(pu1(conv1), pu2(conv1), 'g-.');
+hold on;
+plot(pu1(conv2), pu2(conv2), 'g-.');
+hold on;
+plot(pu1(conv3), pu2(conv3), 'g-.');
+hold on;
+plot(pu1(conv4), pu2(conv4), 'g-.');
 grid on;
 
 figure('Name', 'x');

@@ -10,7 +10,7 @@ tau = 0.5*10*(gausst + ones(1, length(gausst)));
 cfg_x = getSplineCfg(6, 3, 3);
 cfg_x.knot = cfg_x.knot * 10;
 cfg_x.bpt = cfg_x.bpt * 10;
-cfg_u = getSplineCfg(5, 4, 4);
+cfg_u = getSplineCfg(5, 4, 3);
 cfg_u.knot = cfg_u.knot * 10;
 cfg_u.bpt = cfg_u.bpt * 10;
 % the dimension of state variable
@@ -21,7 +21,7 @@ dim_u = 2;
 np = dim_x * cfg_x.nc + dim_u * cfg_u.nc;
 % spline parameter matrix for state variable
 B_x = getSplineMatrix(1, tau, cfg_x);
-dB_x = getDSplineMatrix(1, 1, tau, cfg_x) * differentialMatrix(1, cfg_x.nc, 1);
+dB_x = getDSplineMatrix(1, tau, cfg_x) * differentialMatrix(1, cfg_x.nc, 1);
 % dB_x = diffSplineMatrix(1, cfg_x, tau);
 % spline parameter matrix for control variable
 B_u = getSplineMatrix(1, tau, cfg_u);

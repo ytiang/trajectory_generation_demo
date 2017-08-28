@@ -1,7 +1,7 @@
 clc;
 clear all;
 addpath('../../lib');
-[gausst, gaussw] = getGaussParam(50);
+[gausst, gaussw] = getGaussParam(30);
 tau = 0.5*10*(gausst + ones(1, length(gausst)));
 % N = 50;
 % tau = 0:10/N:10;
@@ -17,7 +17,7 @@ np = dim * cfg.nc;
 % spline parameter matrix for flat output variables
 B = getSplineMatrix(1, tau, cfg);
 % dB= diffSplineMatrix(1, cfg, tau);
-dB = getDSplineMatrix(1, 1, tau, cfg) * differentialMatrix(1, cfg.nc, 1);
+dB = getDSplineMatrix(1, tau, cfg) * differentialMatrix(1, cfg.nc, 1);
 ddB = diffSplineMatrix(2, cfg, tau);
 
 %% set optimization problem
