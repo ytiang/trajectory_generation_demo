@@ -2,7 +2,7 @@ clc;
 clear all;
 close all;
 addpath('../../lib');
-[gausst, gaussw] = getGaussParam(50);
+[gausst, gaussw] = getGaussParam(30);
 tau = 0.5*(gausst + ones(1, length(gausst)));
 Nt = length(tau);
 path_constraint = 0;
@@ -45,7 +45,7 @@ Aeq(6,p_num(1)+1:sum(p_num(1:2))) = B.pt(Nt,:);
 Aeq(7,sum(p_num(1:2))+1:sum(p_num(1:3))) = B.th(Nt,:);
 %thn
 Aeq(8,sum(p_num(1:3))+1:sum(p_num(1:4))) = B.u(Nt,:);
-beq = [0;0;0/180*pi;0; 30;30;0/180*pi;0];
+beq = [0;0;0/180*pi;0; 25;25;-90/180*pi;0];
 
 % linear nonequation constraints : A*x < b
 if(path_constraint)
@@ -63,7 +63,7 @@ lb = -inf*ones(np, 1);
 % th low
 lb(sum(p_num(1:2))+1:sum(p_num(1:3))) = -pi*ones(cfg_th.nc, 1);
 % phi low
-lb(sum(p_num(1:3))+1:sum(p_num(1:4))) = -30/180*pi*ones(cfg_u.nc,1);
+lb(sum(p_num(1:3))+1:sum(p_num(1:4))) = -25/180*pi*ones(cfg_u.nc,1);
 % tf low
 lb(np) = 0.1;
 ub = inf*ones(np, 1);
@@ -72,9 +72,9 @@ ub = inf*ones(np, 1);
 % th upper
 ub(sum(p_num(1:2))+1:sum(p_num(1:3))) = pi*ones(cfg_th.nc, 1);
 % phi upper
-ub(sum(p_num(1:3))+1:sum(p_num(1:4))) = 30/180*pi*ones(cfg_u.nc,1);
+ub(sum(p_num(1:3))+1:sum(p_num(1:4))) = 25/180*pi*ones(cfg_u.nc,1);
 % tf upper
-ub(np) = 20;
+ub(np) = 200;
 % initial guess:
 p0 = zeros(np, 1);
 dx = (beq(5:6)-beq(1:2))/(cfg_pt.nc-1);
@@ -83,7 +83,7 @@ for i=1:cfg_pt.nc
     p0(i+cfg_pt.nc) = (i-1)*dx(2);
 end
 dth = (beq(7)-beq(3))/(cfg_th.nc-1);
-for i=1:cfg_pt.nc
+for i=1:cfg_th.nc
     p0(i+sum(p_num(1:2))) = (i-1)*dth;
 end
 p0(np) = 10;
