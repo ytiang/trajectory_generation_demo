@@ -1,0 +1,3 @@
+% function [ref_path] = getRefPath()
+curve = csvread('reference_path.csv',1, 0);
+
