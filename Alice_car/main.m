@@ -1,7 +1,7 @@
 clc;
 clear all;
 close all;
-addpath('../../lib');
+addpath('../lib');
 [gausst, gaussw] = getGaussParam(30);
 tau = 0.5*(gausst + ones(1, length(gausst)));
 Nt = length(tau);
