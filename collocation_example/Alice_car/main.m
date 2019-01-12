@@ -13,11 +13,14 @@ cfg_th = getSplineCfg(6, 6, 1);
 cfg_u = getSplineCfg(4, 10, 1);
 
 B.pt = getSplineMatrix(1, tau, cfg_pt);
-dB.pt = getDSplineMatrix(1, 1, tau, cfg_pt) * differentialMatrix(1, cfg_pt.nc, 1);
+% dB.pt = getDSplineMatrix(1, 1, tau, cfg_pt) * differentialMatrix(1, cfg_pt.nc, 1);
+dB.pt = diffSplineMatrix(1, cfg_pt, tau);
 B.th = getSplineMatrix(1, tau, cfg_th);
-dB.th = getDSplineMatrix(1, 1, tau, cfg_th) * differentialMatrix(1, cfg_th.nc, 1);
+% dB.th = getDSplineMatrix(1, 1, tau, cfg_th) * differentialMatrix(1, cfg_th.nc, 1);
+dB.th = diffSplineMatrix(1, cfg_th, tau);
 B.u = getSplineMatrix(1, tau, cfg_u);
-dB.u = getDSplineMatrix(1, 1, tau, cfg_u) * differentialMatrix(1, cfg_u.nc, 1);
+% dB.u = getDSplineMatrix(1, 1, tau, cfg_u) * differentialMatrix(1, cfg_u.nc, 1);
+dB.u = diffSplineMatrix(1, cfg_u, tau);
 %% Set optimized problem
 dim = 4;
 np = cfg_pt.nc * 2 + cfg_th.nc + cfg_u.nc + 1;
@@ -42,7 +45,7 @@ Aeq(6,p_num(1)+1:sum(p_num(1:2))) = B.pt(Nt,:);
 Aeq(7,sum(p_num(1:2))+1:sum(p_num(1:3))) = B.th(Nt,:);
 %thn
 Aeq(8,sum(p_num(1:3))+1:sum(p_num(1:4))) = B.u(Nt,:);
-beq = [0;0;0/180*pi;0; 5;30;90/180*pi;0];
+beq = [0;0;0/180*pi;0; 30;30;0/180*pi;0];
 
 % linear nonequation constraints : A*x < b
 if(path_constraint)

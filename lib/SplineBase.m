@@ -3,7 +3,11 @@ if(k == 1)
     if(t >= T(i) && t < T(i+1))
         value = 1;
     else
-        value = 0;
+        if(T(i+1) == T(length(T)) && T(i) < T(i+1) && t == T(i+1))
+            value = 1;
+        else
+            value = 0;
+        end
     end
 else
     dt1 = T(i+k-1) - T(i);
@@ -21,6 +25,14 @@ else
     if(w1 == 0 && w2 == 0)
         value = 0;
     else
-        value = w1 * SplineBase(i, k-1, t, T) + w2 * SplineBase(i+1, k-1, t, T);
+        if w2 == 0
+            value = w1 * SplineBase(i, k-1, t, T);
+        else
+            if w1 == 0
+                value =  w2 * SplineBase(i+1, k-1, t, T);
+            else
+                value = w1 * SplineBase(i, k-1, t, T) + w2 * SplineBase(i+1, k-1, t, T);
+            end
+        end
     end
 end

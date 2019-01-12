@@ -1,0 +1,30 @@
+[pz1, pz2, wz1, wz2] = getParam(p, cfg.nc);
+num = length(tau);
+vec = zeros(3, cfg.nc);
+x1 = zeros(num, 1);
+x2 = zeros(num, 1);
+x3 = zeros(num, 1);
+u1 = zeros(num, 1);
+u2 = zeros(num, 1);
+for i = 1 : num
+    vec(1, :) = B(i, :);
+    vec(2, :) = dB(i, :);
+    vec(3, :) = ddB(i, :);
+    param1 = nonUniformSplineParam(2, vec, wz1);
+    param2 = nonUniformSplineParam(2, vec, wz2);
+    z1 = param1(1).R * pz1;
+    dz1 = param1(2).R * pz1;
+    ddz1 = param1(3).R * pz1;
+    z2 = param2(1).R * pz2;
+    dz2 = param2(2).R * pz2;
+    ddz2 = param2(3).R * pz2;
+    x1(i) = z1;
+    x2(i) = dz2 / dz1;
+    x3(i) = z2;
+    u1(i) = dz1;
+    u2(i) = (ddz2*dz1 - ddz1*dz2) / (dz1 * dz1);
+end
+figure('Name', 'state');
+plot3(x1, x2, x3);
+figure('Name', 'input');
+plot(u1, u2);
