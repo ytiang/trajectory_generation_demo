@@ -24,7 +24,67 @@ for i = 1 : num
     u1(i) = dz1;
     u2(i) = (ddz2*dz1 - ddz1*dz2) / (dz1 * dz1);
 end
+[pz1, pz2, wz1, wz2] = getParam(p0, cfg.nc);
+x1_0 = zeros(num, 1);
+x2_0 = zeros(num, 1);
+x3_0 = zeros(num, 1);
+u1_0 = zeros(num, 1);
+u2_0 = zeros(num, 1);
+for i = 1 : num
+    vec(1, :) = B(i, :);
+    vec(2, :) = dB(i, :);
+    vec(3, :) = ddB(i, :);
+    param1 = nonUniformSplineParam(2, vec, wz1);
+    param2 = nonUniformSplineParam(2, vec, wz2);
+    z1 = param1(1).R * pz1;
+    dz1 = param1(2).R * pz1;
+    ddz1 = param1(3).R * pz1;
+    z2 = param2(1).R * pz2;
+    dz2 = param2(2).R * pz2;
+    ddz2 = param2(3).R * pz2;
+    x1_0(i) = z1;
+    x2_0(i) = dz2 / dz1;
+    x3_0(i) = z2;
+    u1_0(i) = dz1;
+    u2_0(i) = (ddz2*dz1 - ddz1*dz2) / (dz1 * dz1);
+end
 figure('Name', 'state');
 plot3(x1, x2, x3);
+grid on;
 figure('Name', 'input');
 plot(u1, u2);
+grid on;
+
+figure('Name', 'x');
+subplot(3,1,1);
+plot(tau, x1, 'b', tau, x1_0, 'k-.');
+axis([0, 10, 10, 30]);
+set(gca,'XTick',[0:1:10]);
+set(gca,'YTick',[10:5:30]);
+grid on;
+subplot(3,1,2);
+plot(tau, x2, 'b', tau, x2_0, 'k-.');
+axis([0, 10, -2, 10]);
+set(gca,'XTick',[0:1:10]);
+set(gca,'YTick',[-2:2:10]);
+grid on;
+subplot(3,1,3);
+plot(tau, x3, 'b', tau, x3_0, 'k-.');
+axis([0, 10, 12, 36]);
+set(gca,'XTick',[0:1:10]);
+set(gca,'YTick',[12:3:36]);
+grid on;
+
+figure('Name', 'u');
+subplot(2,1,1);
+plot(tau, u1, 'b', tau, u1_0, 'k-.');
+axis([0, 10, -1, 3]);
+set(gca,'XTick',[0:1:10]);
+set(gca,'YTick',[-1:0.5:3]);
+grid on;
+subplot(2,1,2);
+plot(tau, u2, 'b', tau, u2_0, 'k-.');
+axis([0, 10, -2, 3]);
+set(gca,'XTick',[0:1:10]);
+set(gca,'YTick',[-2:0.5:3]);
+grid on;

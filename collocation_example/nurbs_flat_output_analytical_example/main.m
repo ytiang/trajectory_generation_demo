@@ -7,7 +7,7 @@ tau = 0.5*10*(gausst + ones(1, length(gausst)));
 % tau = 0:10/N:10;
 %% spline-parameterized State variables
 % the configuration of spline
-cfg = getSplineCfg(6, 4, 3);
+cfg = getSplineCfg(6, 4, 1);
 cfg.knot = cfg.knot * 10;
 cfg.bpt = cfg.bpt * 10;
 % the dimension of flat output variables
@@ -16,7 +16,8 @@ dim = 4;
 np = dim * cfg.nc;
 % spline parameter matrix for flat output variables
 B = getSplineMatrix(1, tau, cfg);
-dB= diffSplineMatrix(1, cfg, tau);
+% dB= diffSplineMatrix(1, cfg, tau);
+dB = getDSplineMatrix(1, 1, tau, cfg) * differentialMatrix(1, cfg.nc, 1);
 ddB = diffSplineMatrix(2, cfg, tau);
 
 %% set optimization problem
@@ -25,7 +26,7 @@ cost = @(p)constFunc(p, B, dB, ddB, cfg.nc, gaussw);
 % nonlinear constraints
 nlon = @(p)nlonConstraints(p, dB, B, cfg.nc);
 % initial guess
-p0 = (1:np)';
+initial_guess;
 % solve
 tic
 % snscreen on;

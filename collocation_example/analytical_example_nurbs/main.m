@@ -22,7 +22,6 @@ np = dim_x * cfg_x.nc + dim_u * cfg_u.nc;
 % spline parameter matrix for state variable
 B.x = getSplineMatrix(1, tau, cfg_x);
 dB.x = getDSplineMatrix(1, 1, tau, cfg_x) * differentialMatrix(1, cfg_x.nc, 1);
-% dB.x = diffSplineMatrix(1, cfg_x, tau);
 % spline parameter matrix for control variable
 B.u = getSplineMatrix(1, tau, cfg_u);
 

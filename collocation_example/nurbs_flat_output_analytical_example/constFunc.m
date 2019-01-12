@@ -1,6 +1,13 @@
 % function [d] = constFunc(p, B, dB, ddB, num, weight)
 function [d,g] = constFunc(p, B, dB, ddB, num, weight)
 [pz1, pz2, wz1, wz2] = getParam(p, num);
+%% differential flat output system
+% x1 = z1;
+% x2 = d(z2)/d(z1)
+% x3 = z2;
+% u1 = d(z1);
+% u2 = (d(z1)*dd(z2) - dd(z1)*d(z2)) / (d(z1))^2;
+%%
 d = 0;
 g = zeros(length(p), 1);
 n = length(weight);
@@ -35,7 +42,7 @@ for i=1:n
           w2*2*u2 * ( (ddz2*param1(2).W*pz1 - dz2 * param1(3).W*pz1) / dz1^2 - ...
                       2* u2 / dz1 * param1(2).W*pz1) );
     % df/dwz2
-    g(3*num+1 : 4*num) = g(3*num+1 : 4*num) - w2 * weight(i)*2*u2 * ... 
+    g(3*num+1 : 4*num) = g(3*num+1 : 4*num) + w2 * weight(i)*2*u2 * ... 
         (dz1*param2(3).W*pz2 - ddz1*param2(2).W*pz2) / dz1^2;
 end
 d = d * 10 /4;
