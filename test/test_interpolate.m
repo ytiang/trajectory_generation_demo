@@ -1,7 +1,7 @@
 clc;
 clear all;
 addpath('../lib');
-ctrlp = csvread('smooth_result.csv',1,0);
+ctrlp = csvread('a_star_path.csv',1,0);
 
 % the number of control points
 ctrl_point_num = length(ctrlp);
