@@ -2,13 +2,13 @@ clc;
 clear all;
 close all;
 addpath('../../lib');
-[gausst, gaussw] = getGaussParam(30);
+[gausst, gaussw] = getGaussParam(15);
 s = 0.5*(gausst + ones(1, length(gausst)));
 Nt = length(s);
 
 %% spline-parameterized
 % the order of spline basic function for state variables
-cfg_pt = getSplineCfg(8, 4, 1);
+cfg_pt = getSplineCfg(8, 5, 1);
 cfg_th = getSplineCfg(4, 8, 1);
 
 B.pt = getSplineMatrix(1, s, cfg_pt);
@@ -41,7 +41,7 @@ Aeq(5,p_num(1)+1:sum(p_num(1:2))) = B.pt(Nt,:);
 %vn
 Aeq(6,sum(p_num(1:2))+1:sum(p_num(1:3))) = B.th(Nt,:);
 
-beq = [0;0;0/180*pi; 30;30;0/180*pi];
+beq = [0;0;0/180*pi; 30;30;-100/180*pi];
 
 % linear nonequation constraints : A*x < b
 A = [];
@@ -94,7 +94,7 @@ sf = p(np);
 s_new = s(1):0.01:s(Nt);
 x = SplineApprox(px, 1, s_new, cfg_pt);
 y = SplineApprox(py, 1, s_new, cfg_pt);
-pth = SplineApprox(pth, 1, s_new, cfg_th);
+theta = SplineApprox(pth, 1, s_new, cfg_th);
 figure('Name', 'position');
 plot(x, y);
 hold on;
@@ -103,6 +103,13 @@ bpt_x = SplineApprox(px, 1, s, cfg_pt);
 bpt_y = SplineApprox(py, 1, s, cfg_pt);
 plot(bpt_x, bpt_y, '*')
 axis equal;
+figure('Name', 'heading');
+plot(s_new, theta);
+
+coef_kappa = diffSplineMatrix(1, cfg_th, s_new);
+kappa = coef_kappa * pth / sf;
+figure('Name', 'curvature');
+plot(s_new, kappa);
 
 
 

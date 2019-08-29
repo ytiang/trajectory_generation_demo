@@ -1,6 +1,6 @@
 function [c, ceq, dc, dceq] = nlonConstraints(p, B, dB, n, s)
-c = [];
-dc = [];
+c = zeros(length(s)*2, 1);
+dc = zeros(length(s)*2, length(p));
 ceq = zeros(length(s)*2, 1);
 dceq = zeros(length(s)*2, length(p));
 [px, py, pth] = getValue(p, n);
@@ -25,4 +25,20 @@ for i=1:length(s)
     
     dceq((i-1)*2+1, :) = g1;
     dceq((i-1)*2+2, :) = g2;
+    
+    % inequality
+    kappa = dB.th(i, :) * pth / sf;
+    c((i-1)*2+1) = kappa - 0.15;
+    c((i-1)*2+2) = -0.15 - kappa;
+    
+    gc1 = zeros(1, length(p));
+    gc1(sum(n(1:2))+1 : sum(n(1:3))) = dB.th(i, :) / sf;
+    gc1(length(p)) = - kappa / sf;
+    
+    gc2 = zeros(1, length(p));
+    gc2(sum(n(1:2))+1 : sum(n(1:3))) = -dB.th(i, :) / sf;
+    gc2(length(p)) = kappa / sf;
+    
+    dc((i-1)*2+1, :) = gc1;
+    dc((i-1)*2+2, :) = gc2;
 end
