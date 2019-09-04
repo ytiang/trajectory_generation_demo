@@ -1,5 +1,5 @@
 function [obs_field] = obsMap()
-image = imread('obs3.png');
+image = imread('data/obs1.png');
 obs = uint8(255 * ones(size(image(:,:,1)))) - image(:,:,1);
 dist = bwdist(obs);
 inverse_dist = bwdist(image(:,:,1));

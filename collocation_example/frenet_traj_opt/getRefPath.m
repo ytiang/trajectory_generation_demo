@@ -1,6 +1,6 @@
 function [ref_path] = getRefPath(delta_s)
 % delta_s = 1.0;
-curve = csvread('reference_path.csv',1, 0);
+curve = csvread('data/reference_path1.csv',1, 0);
 num = length(curve);
 ref_path = [];
 actual_num = 1;

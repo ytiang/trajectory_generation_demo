@@ -14,9 +14,19 @@ boundaries = B{1, 1}*obs.resolution;
 patch(boundaries(:, 1), boundaries(:, 2), 'w');
 hold on;
 plot(path(:,1), path(:,2), 'r', ref_path(:,1), ref_path(:, 2), 'b');
+hold on;
 
-axis equal;
-
+for i=1:discrete_num
+    R = [cos(path(i, 3)), -sin(path(i, 3)); sin(path(i, 3)), cos(path(i, 3))];
+    t = path(i, 1:2)';
+    foot = zeros(2, 5);
+    for j = 1:4
+        foot(:, j) = R * car.footprint(j, :)' + t;
+    end
+    foot(:, 5) = foot(:, 1);
+    plot(foot(1, :), foot(2, :));
+    hold on;
+end
 
 % 
 % figure('Name', 'cost map');

@@ -21,12 +21,17 @@ dB.th = diffSplineMatrix(1, cfg_th, s);
 
 % dB.u = getDSplineMatrix(1, 1, s, cfg_u) * differentialMatrix(1, cfg_u.nc, 1);
 
+
 %% Set optimized problem
 dim = 3;
 np = cfg_pt.nc * 2 + cfg_th.nc + 1;
 p_num = [cfg_pt.nc, cfg_pt.nc, cfg_th.nc];
 cost = @(p)constFunc(p, B, dB, p_num, gaussw, obs);
 nlon = @(p)nlonConstraints(p, B, dB, p_num, s, obs);
+
+% set initial guess
+[p0, beq] = setInitialGuess(p_num);
+
 % endpoint equation constraints,Aep * x = beq
 Aeq = zeros(dim*2, np);
 %x0
@@ -41,8 +46,6 @@ Aeq(4,1:p_num(1)) = B.pt(Nt,:);
 Aeq(5,p_num(1)+1:sum(p_num(1:2))) = B.pt(Nt,:);
 %vn
 Aeq(6,sum(p_num(1:2))+1:sum(p_num(1:3))) = B.th(Nt,:);
-
-beq = [7.7;14.9;90/180*pi; 70;29;90/180*pi];
 
 % linear nonequation constraints : A*x < b
 % bounding box:
@@ -72,18 +75,7 @@ ub = inf*ones(np, 1);
 ub(sum(p_num(1:2))+1:sum(p_num(1:3))) = pi*ones(cfg_th.nc, 1);
 % sf upper
 ub(np) = 3*lb(np);
-% initial guess:
-p0 = zeros(np, 1);
-dx = (beq(4:5)-beq(1:2))/(cfg_pt.nc-1);
-for i=1:cfg_pt.nc
-    p0(i) = (i-1)*dx(1);
-    p0(i+cfg_pt.nc) = (i-1)*dx(2);
-end
-dth = (beq(6)-beq(3))/(cfg_th.nc-1);
-for i=1:cfg_th.nc
-    p0(i+sum(p_num(1:2))) = (i-1)*dth;
-end
-p0(np) = lb(np);
+
 % options = optimoptions(@fmincon,'Algorithm','sqp-legacy','MaxIterations',3000);
 % [p,fval] = fmincon(cost, p0,A,b,Aeq,beq,lb,ub,nlon, options);
 

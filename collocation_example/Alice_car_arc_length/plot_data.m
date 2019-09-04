@@ -18,14 +18,11 @@ plot(px, py, '+');
 plot(bpt_x, bpt_y, '*')
 axis equal;
 % check constraint:
-[yc, yceq, ydc, ydceq] = nlon(p);
-yobs_cost = zeros(length(s), 1);
-yg_cost = zeros(length(s), 2);
-for i=1:length(s)
-    [a, b] = distanceField(obs, bpt_x(i), bpt_y(i));
-    yobs_cost(i) = a;
-    yg_cost(i,:) = b';
-end
+figure('Name', 'cost map');
+x_range = 1:obs.rows;
+y_range = 1:obs.cols;
+[X, Y] = meshgrid(x_range, y_range);
+surf(x_range, y_range, obs.cost_map);
 
 % figure('Name', 'heading');
 % plot(s_new, theta);

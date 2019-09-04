@@ -9,7 +9,7 @@ sf = p(length(p));
 gth = zeros(n(3), 1);
 gx = zeros(n(1), 1);
 gy = zeros(n(2), 1);
-w = 15;
+w = 0;
 
 for i=1:N
     kappa = dB.th(i, :) * pth / sf;

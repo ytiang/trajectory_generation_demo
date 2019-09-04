@@ -1,5 +1,5 @@
 function [obs_field] = obsMap()
-image = imread('obs2.png');
+image = imread('obs3.png');
 obs = uint8(255 * ones(size(image(:,:,1)))) - image(:,:,1);
 dist = bwdist(obs);
 inverse_dist = bwdist(image(:,:,1));
@@ -7,7 +7,7 @@ sdf = dist - inverse_dist;
 
 [rows, cols] = size(sdf);
 
-dis_threshold = 10.0;
+dis_threshold = 2.0;
 
 obs_field.max_cost = 0;
 obs_field.resolution = 0.1;
@@ -27,6 +27,7 @@ for i= 1:rows
                 obs_field.cost_map(i, j) = 1 / dis_threshold * (sdf(i, j) - dis_threshold)^2;
             end
         end
+        obs_field.cost_map(i, j)  =min(obs_field.cost_map(i, j), 50);
         if obs_field.cost_map(i, j) > obs_field.max_cost
             obs_field.max_cost = obs_field.cost_map(i, j);
         end

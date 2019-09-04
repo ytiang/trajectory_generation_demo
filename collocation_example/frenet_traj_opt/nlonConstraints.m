@@ -1,11 +1,19 @@
-function [c, ceq, dc, dceq] = nlonConstraints(p, ref_kappa, ref_s, ref_pt, ref_th, obs)
+function [c, ceq, dc, dceq] = nlonConstraints(p, car, ref_kappa, ref_s, ref_pt, ref_th, obs)
 num = length(p) / 3;
-dis_thereshold = 1.8;
 
 % environment constraint:
-c = zeros(num - 1, 1);
-dc = zeros(num - 1, length(p));
-% vehicle kinematic constraints:
+ n = 4;
+c = zeros(n*(num - 1), 1);
+dc = zeros(n*(num - 1), length(p));
+
+% vehicle kinematic constraints based on frenet:
+% d(s) is the lateral offset; phi(s) = heading_traj - heading_ref
+% d' = (1 - d*k_r)*tan(phi)
+% phi' = k_p(1-d*k_r)/cos(phi) - k_r;
+% k_r is the curvature os reference path, k_p is the curvature of actual
+% path as control input.
+
+
 ceq = zeros((num - 1)*2, 1);
 dceq = zeros((num - 1)*2, length(p));
 
@@ -32,7 +40,21 @@ for i=2:num
     dceq((i-2) * 2 + 2, 2*num+i-1) = -(r / cos(phi(i)));
     
     pt = ref_pt(i, :) + d(i) * [-sin(ref_th(i)), cos(ref_th(i))];
-    [radius, g] = distanceField(obs, pt(1), pt(2));
-    c(i-1) = dis_thereshold - radius;
-    dc(i-1, i) = -[-sin(ref_th(i)), cos(ref_th(i))] * g;
+    th = ref_th(i) + phi(i);
+    part_d = [-sin(ref_th(i)); cos(ref_th(i)); 0];
+    part_phi = [0; 0; 1];
+    [centers,jac] = transformCircleCenters(car, pt(1), pt(2), th);
+    for j = 1:n
+        if j == 1 || j == 4
+            min_r = car.r+0.3;
+        else
+            min_r = 0.3+car.r;
+        end
+        [radius, g] = distanceField(obs, centers(j,1), centers(j,2));
+        c((i-2)*n + j) = min_r - radius;
+        % df/d(d_i)
+        dc((i-2)*n + j, i) = -g' * jac(2*j-1:2*j, :) * part_d;
+        % df/d(phi_i)
+        dc((i-2)*n + j, num+i) = -g' *jac(2*j-1:2*j, :) * part_phi;
+    end
 end
